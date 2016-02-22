@@ -1,14 +1,23 @@
 // Update with your config settings.
 try {
-  require('dotenv').load();
+  var parent = __dirname.split('/');
+  parent.pop();
+  parent = parent.join('/');
+  require('dotenv').config({ path: parent + '/.env' });
 } catch (err) {
-  console.error(err);
+  console.log(err);
 }
+
 
 module.exports = {
   development: {
     client: 'mysql',
-    connection: 'mysql://localhost:3306/tilda'
+    connection: {
+      database: 'tilda',
+      user:  'root',
+      host: 'localhost',
+      port: 3306
+    }
   },
   production: {
     client: 'mysql',
