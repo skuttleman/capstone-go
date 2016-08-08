@@ -1,14 +1,21 @@
 package main
 
 import (
+  _ "github.com/joho/godotenv/autoload"
+
   "os"
   "net/http"
-  // "fmt"
+  "fmt"
+  // "reflect"
 
   "github.com/gorilla/pat"
-  // "github.com/gorilla/sessions"
-  "github.com/gorilla/context"
-  _ "github.com/joho/godotenv/autoload"
+  // "github.com/gorilla/context"
+  // "github.com/markbates/goth"
+	// "github.com/markbates/goth/gothic"
+	// "github.com/markbates/goth/providers/gplus"
+
+  "github.com/skuttleman/capstone/api"
+  "github.com/skuttleman/capstone/services"
 )
 
 var port string
@@ -22,7 +29,11 @@ func init() {
 
 func main() {
   app := pat.New()
-  // store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+
+  services.Auth("/auth", app)
+
+  api.Players("/api/players", app)
 
   app.Get("/", func(res http.ResponseWriter, req *http.Request) {
     file := req.URL.Path[1:]
@@ -30,7 +41,8 @@ func main() {
       file = "index.html"
     }
     http.ServeFile(res, req, "./front-end/public/" + file)
-    // fmt.Fprintf(res, "Hi there, I love %s!", req.URL.Path[1:])
   })
+
+  fmt.Println("Server is listening on port: " + port)
   http.ListenAndServe(":" + port, context.ClearHandler(app))
 }
